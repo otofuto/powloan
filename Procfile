@@ -1,1 +1,1 @@
-web: bin/powloan
+web: bin/powloan.git
