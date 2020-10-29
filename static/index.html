@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-9PE6F7FR3C"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+
+		  gtag('config', 'G-9PE6F7FR3C');
+		</script>
+		<meta charset="utf-8">
+		<meta name="description" content="トレントサイトに接続できないとき用のトレントダウンロードのやつ">
+		<meta name="keywords" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="robots" content="noindex,nofollow">
+		<meta name="author" content="OTFT">
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:site" content="@FiledlS" />
+		<meta name="twitter:creator:id" content="@FiledlS" />
+		<meta name="twitter:title" content="filedl | nyaa.siリアルタイムスクレイピング" />
+		<meta name="twitter:description" content="nyaaをスクレイピングしてリアルタイムに新着アニメを表示するサイトです。
+基本的に自動で表示させてるので、nyaaに載ってからサイトへ反映させるまでにタイムラグは一切ありません。" />
+		<meta name="twitter:image" content="https://filedl.herokuapp.com/materials/twittercard.png" />
+		<meta name="twitter:url" content="https://filedl.herokuapp.com/" />
+		<title>新着アニメトレント一覧</title>
+		<link rel="author" href="https://otft.info">
+		<link rel="stylesheet" href="/materials/master.css">
+		<style>
+			.animerow {
+				background-color: white;
+				border: dashed 2px lightgray;
+				margin: 10px 0;
+			}
+
+			.animerow__title {
+				background-color: steelblue;
+				color: white;
+				padding: 5px 10px;
+				border-bottom: dashed 2px lightgray;
+				font-size: 1.3em;
+				font-weight: bold;
+			}
+
+			.animerow__title__newtitle {
+				background-color: lightskyblue;
+				color: white;
+				font-weight: bold;
+				border-radius: 3px;
+				margin-right: 8px;
+				box-shadow: -3px 3px 3px royalblue;
+			}
+
+			.animerow__title__newtitle:before {
+				content: 'NEW!';
+			}
+
+			.animerow__content {
+				padding: 5px;
+				min-height: 60px;
+				display: flex;
+			}
+
+			.animerow__wasu {
+				display: block;
+				font-weight: bolder;
+				font-size: 1.2em;
+			}
+
+			.animerow__date {
+				color: gray;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<p>
+				<a href="/">新着アニメ一覧</a>
+				<a href="/nyaa/">個別ダウンロード</a>
+				<a href="/title/">アニメタイトルリスト</a>
+			</p>
+		</header>
+		<div id="content">
+			<h1>新着アニメトレント一覧</h1>
+			<p>青字の話数をクリックすればすぐにtorrentファイルがダウンロードできます。</p>
+			<div id="linkList">読込中</div>
+		</div>
+		<script>
+			var animeData = null;
+			fetch('/anime.json?' + new Date()).then(res => res.json())
+			.then(data => {
+				animeData = data;
+				fetch('/animelist/' + (new URL(location).searchParams.get("q") == null ? "" : "?search=" + new URL(location).searchParams.get("q")))
+				.then(res => res.json())
+				.then(animelist => {
+					linkList.innerHTML = "";
+					var addedWasu = [];
+					Array.from(animelist).forEach(anime => {
+						var animerow = document.createElement("div");
+						animerow.setAttribute("class", "animerow");
+						linkList.appendChild(animerow);
+
+						var title = checkTitle(anime.keyword);
+						var animeTitle = document.createElement("div");
+						animeTitle.setAttribute("class", "animerow__title");
+						animeTitle.innerText = title;
+						animerow.appendChild(animeTitle);
+
+						if (anime.keyword.indexOf(" - 01 ") >= 0) {
+							var newTitle = document.createElement("span");
+							newTitle.setAttribute("class", "animerow__title__newtitle");
+							animeTitle.prepend(newTitle);
+						}
+
+						if (title == "登録無し") {
+							var btnRegist = document.createElement("input");
+							btnRegist.value = "タイトルを登録する";
+							btnRegist.setAttribute("type", "button");
+							animeTitle.appendChild(btnRegist);
+
+							btnRegist.addEventListener("click", () => {
+								var und = anime.keyword.replace("[Ohys-Raws] ", "");
+								if (und.indexOf(" (BD ") > 0) {
+									und = und.substring(0, und.lastIndexOf(" (BD "));
+								} else if (und.indexOf(" - ") > 0) {
+									und = und.substring(0, und.lastIndexOf(" - "));
+								}
+								location = "/title/?keyword=" + und;
+							});
+						}
+
+						var animeContent = document.createElement("div");
+						animeContent.setAttribute("class", "animerow__content");
+						animerow.appendChild(animeContent);
+
+						var imageurl;
+						if ((imageurl = getImage(title)) != "") {
+							var img = document.createElement("img");
+							img.src = imageurl;
+							img.style.width = "50%";
+							animeContent.appendChild(img);
+
+							img.addEventListener('click', () => {
+								location = "?q=" + getKeyword(anime.keyword);
+							});
+						}
+
+						var wd = document.createElement("div");
+						wd.style.width = title != "登録無し" ? "50%" : "100%";
+						wd.style.paddingLeft = "20px";
+						animeContent.appendChild(wd);
+
+						var anc = document.createElement("a");
+						anc.setAttribute("class", "animerow__wasu");
+						var query = new URLSearchParams({
+							"url": anime.download_url,
+							"filename": anime.keyword + ".torrent"
+						}).toString();
+						anc.setAttribute("href", "/download/?" + query);
+						anc.setAttribute("target", "_blank");
+						wd.appendChild(anc);
+						if (title != "登録無し") {
+							var dispName = anime.keyword.replace("[Ohys-Raws] ", "");
+							if (dispName.indexOf(" - ") >= 0) {
+								var wasu = getWasu(dispName.substring(dispName.lastIndexOf(" - ") + 3));
+								anc.addEventListener('click', () => {
+									localStorage.setItem(dispName.substring(0, dispName.lastIndexOf(" - ")), wasu);
+								});
+								if (localStorage.getItem(dispName.substring(0, dispName.lastIndexOf(" - "))) != null) {
+									var lastdownload = document.createElement("span");
+									lastdownload.innerText = "前回のダウンロード: " + localStorage.getItem(dispName.substring(0, dispName.lastIndexOf(" - ")));
+									wd.appendChild(lastdownload);
+								}
+								if (new URL(location).searchParams.get("q") != null) {
+									var addWasu = dispName.substring(0, dispName.lastIndexOf(" - ") + 3) + wasu;
+									if (addedWasu.includes(addWasu)) {
+										animerow.style.display = "none";
+									}
+									addedWasu.push(addWasu);
+								}
+								if (isFinite(wasu)) {
+									anc.innerText = "第" + (wasu - 0) + "話";
+								} else {
+									anc.innerText = wasu;
+								}
+							} else if (dispName.indexOf(" (BD ") >= 0) {
+								if (dispName.toLowerCase().indexOf("gekijouban") >= 0) {
+									anc.addEventListener('click', () => {
+										localStorage.setItem(dispName.substring(0, dispName.lastIndexOf(" (BD ")), "劇場版");
+									});
+									anc.innerText = "劇場版 BD";
+								} else {
+									anc.addEventListener('click', () => {
+										localStorage.setItem(dispName.substring(0, dispName.lastIndexOf(" (BD ")), "BD版");
+									});
+									anc.innerText = "BD版";
+								}
+								if (localStorage.getItem(dispName.substring(0, dispName.lastIndexOf(" (BD "))) != null) {
+									var lastdownload = document.createElement("span");
+									lastdownload.innerText = "前回のダウンロード: " + localStorage.getItem(dispName.substring(0, dispName.lastIndexOf(" (BD ")));
+									wd.appendChild(lastdownload);
+								}
+							} else {
+								anc.innerText = anime.keyword;
+							}
+						} else {
+							anc.innerText = anime.keyword;
+						}
+
+						var lbl = document.createElement("label");
+						lbl.innerText = "\n" + anime.keyword;
+						lbl.style.color = "gray";
+						lbl.style.textDecoration = "underline";
+						wd.appendChild(lbl);
+
+						var timestamp = document.createElement("div");
+						timestamp.setAttribute("class", "animerow__date");
+						timestamp.innerText = anime.date;
+						wd.appendChild(timestamp);
+					});
+				}).catch(ex => {
+					console.log(ex);
+					linkList.innerHTML = "取得失敗";
+				});
+			});
+
+			function checkTitle(kw) {
+				kw = kw.replace("[Ohys-Raws] ", "");
+				if (kw.indexOf(" - ") > 0) {
+					kw = kw.substring(0, kw.lastIndexOf(" - "));
+				} else if (kw.indexOf("(BD ") > 0) {
+					kw = kw.substring(0, kw.lastIndexOf("(BD "));
+				}
+				var matchList = [];
+				for (let i = 0; i < Object.keys(animeData).length; i++) {
+					if (kw.toLowerCase().indexOf(animeData[i].keyword.toLowerCase()) >= 0) {
+						matchList.push({
+							"title": animeData[i].title,
+							"diff": Math.abs(kw.length - animeData[i].title.length)
+						});
+					}
+				}
+				var ret = {
+					"title": "登録無し",
+					"diff": 100
+				}
+				matchList.forEach(match => {
+					if (match.diff < ret.diff) {
+						ret = match;
+					}
+				});
+				return ret.title;
+			}
+
+			function getKeyword(kw) {
+				kw = kw.replace("[Ohys-Raws] ", "");
+				if (kw.indexOf(" - ") > 0) {
+					kw = kw.substring(0, kw.lastIndexOf(" - "));
+				} else if (kw.indexOf("(BD ") > 0) {
+					kw = kw.substring(0, kw.lastIndexOf("(BD "));
+				}
+				var matchList = [];
+				for (let i = 0; i < Object.keys(animeData).length; i++) {
+					if (kw.toLowerCase().indexOf(animeData[i].keyword.toLowerCase()) >= 0) {
+						matchList.push({
+							"keyword": animeData[i].keyword,
+							"diff": Math.abs(kw.length - animeData[i].title.length)
+						});
+					}
+				}
+				var ret = {
+					"keyword": "",
+					"diff": 100
+				}
+				matchList.forEach(match => {
+					if (match.diff < ret.diff) {
+						ret = match;
+					}
+				});
+				return ret.keyword;
+			}
+
+			function getImage(title) {
+				for (let i = 0; i < Object.keys(animeData).length; i++) {
+					if (animeData[i].title == title)
+						return animeData[i].image;
+				}
+				return "";
+			}
+
+			function getWasu(wasu) {
+				var ret = "";
+				for (let i = 0; i < wasu.length; i++) {
+					if (wasu.charAt(i) == " ")
+						break;
+					ret += wasu.charAt(i);
+				}
+				return ret;
+			}
+		</script>
+	</body>
+</html>
