@@ -32,6 +32,26 @@
 				font-family: 'Sawarabi Mincho', sans-serif;
 				font-size: 16px;
 				margin: 0;
+				background-image: url('facfe284.gif');
+				background-blend-mode: lighten;
+				background-color: rgba(181, 190, 200, 1);
+				background-size: cover;
+				background-position: center;
+				animation-name: bodyback;
+				animation-duration: 2000ms;
+				animation-delay: 2800ms;
+				animation-fill-mode: forwards;
+				animation-timing-function: linear;
+			}
+
+			@keyframes bodyback {
+				0% {
+					background-color: rgba(181, 190, 200, 1);
+				}
+
+				100% {
+					background-color: rgba(181, 190, 200, 0);
+				}
 			}
 
 			header {
@@ -77,17 +97,88 @@
 					width: 100%;
 				}
 			}
+
+			#fade1 {
+				opacity: 0;
+				animation-name: fadein;
+				animation-duration: 2000ms;
+				animation-delay: 1000ms;
+				animation-fill-mode: forwards;
+			}
+
+			#fade2 {
+				opacity: 0;
+				animation-name: fadein;
+				animation-duration: 2000ms;
+				animation-delay: 2800ms;
+				animation-fill-mode: forwards;
+			}
+
+			#fade3 {
+				position: relative;
+				width: 80%;
+				left: 10%;
+				opacity: 0;
+				animation-name: fadein;
+				animation-duration: 5000ms;
+				animation-delay: 0ms;
+				animation-fill-mode: forwards;
+				animation-timing-function: linear;
+			}
+
+			@keyframes fadein {
+				0% {
+					opacity: 0;
+				}
+
+				100% {
+					opacity: 1;
+				}
+			}
+
+			h1 {
+				display: block;
+				height: 0;
+				font-size: 3vw;
+				overflow: hidden;
+				text-align: center;
+				text-shadow: 0 0 5px white;
+				animation-name: hello;
+				animation-duration: 250ms;
+				animation-delay: 5000ms;
+				animation-fill-mode: forwards;
+				animation-timing-function: ease;
+			}
+
+			@media screen and (max-width: 812px) {
+				h1 {
+					font-size: 7vw;
+				}
+			}
+
+			@keyframes hello {
+				0% {
+					height: 0;
+					opacity: 0
+				}
+
+				100% {
+					height: 1.8em;
+					opacity: 1;
+				}
+			}
 		</style>
 	</head>
 	<body>
 		<header>
-			<label>～ 一人ひとり違う神を崇めればいい ～ </label><span style="font-size: 160%;">キャオレンサーポーロアン教</span>
+			<label>～ 一人ひとり違う神を崇めばいいのさ ～ </label><span style="font-size: 160%;">キャオレンサーポーロアン教</span>
 		</header>
 		<main id="main">
 			<div id="content">
-				<p>私達は<span style="color: #FFB6C1;">高い壺</span>を売りつけたりしないし、</p>
-				<p><span style="color: #FFB6C1;">選挙違反</span>とかもしません。</p>
-				<img src="pol.jpg" style="position: relative; width: 80%; left: 10%;">
+				<p id="fade1">私達は<span style="color: #FFB6C1; text-shadow: 0 0 3px white;">高い壺</span>を売りつけたりしないし、</p>
+				<p id="fade2"><span style="color: #FFB6C1; text-shadow: 0 0 3px white;">選挙違反</span>とかもしません。</p>
+				<h1>キャオレンサーポーロアン教</h1>
+				<img src="pol.jpg" id="fade3">
 			</div>
 		</main>
 		<footer>
