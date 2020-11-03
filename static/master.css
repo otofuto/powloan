@@ -23,7 +23,7 @@ header {
 
 #main {
 	margin-top: 80px;
-	min-height: calc(100vh - 102px);
+	min-height: calc(100vh - 137px);
 }
 
 @media screen and (max-width: 812px) {
