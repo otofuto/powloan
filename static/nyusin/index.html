@@ -107,7 +107,7 @@
 					</div>
 					<input type="submit" style="display: none;" name="sub">
 				</form>
-				<button class="button" onclick="document.fm.sub.click()">この内容で送信する</button>
+				<button class="button" onclick="document.fm.sub.click()" id="btnNext">この内容で送信する</button>
 			</div>
 		</main>
 		<footer>
@@ -118,6 +118,7 @@
 		</footer>
 		<script>
 			function next() {
+				btnNext.innerText = "送信中！";
 				var data = new FormData(document.fm);
 				fetch('/Signup', {
 					method: "post",
