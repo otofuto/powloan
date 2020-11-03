@@ -25,82 +25,8 @@
 		<meta name="twitter:url" content="https://powloan.herokuapp.com/">
 		<title>キャオレンサーポーロアン教</title>
 		<link rel="author" href="https://otft.info">
+		<link rel="stylesheet" href="/master.css">
 		<style>
-			@import url('https://fonts.googleapis.com/css2?family=Sawarabi+Mincho&display=swap');
-			body {
-				font-family: 'Sawarabi Mincho', sans-serif;
-				font-size: 16px;
-				margin: 0;
-			}
-
-			header {
-				position: absolute;
-				left: 0;
-				top: 0;
-				width: 100%;
-				line-height: 60px;
-				padding: 0;
-				background-color: #FFE4E1;
-				display: flex;
-				flex-wrap: wrap;
-				cursor: pointer;
-				z-index: 10;
-			}
-
-			#main {
-				margin-top: 80px;
-				min-height: calc(100vh - 102px);
-				position: relative;
-				z-index: 10;
-			}
-
-			@media screen and (max-width: 812px) {
-				#main {
-					margin-top: 140px;
-					min-height: calc(100vh - 162px);
-				}
-			}
-
-			footer {
-				width: 100%;
-				height: 20px;
-				text-align: center;
-				background-color: #FFE4E1;
-			}
-
-			#content {
-				width: 50%;
-				font-weight: bold;
-				margin: 0 auto;
-				text-align: center;
-			}
-
-			@media screen and (max-width: 812px) {
-				#content {
-					width: 100%;
-				}
-			}
-
-			.button {
-				outline: none;
-				border: none;
-				box-shadow: 2px 2px 2px gray;
-				padding: 10px 20px;
-				border-radius: 10px;
-				margin: 10px;
-			}
-
-			.button:focus {
-				box-shadow: 2px 2px 2px black;
-			}
-
-			.button:hover {
-				box-shadow: 2px 2px 2px black;
-			}
-
-			.button:active {
-				box-shadow: 2px 2px 2px black inset;
-			}
 		</style>
 	</head>
 	<body>
@@ -111,18 +37,20 @@
 			<div id="content">
 				<form name="fm" onsubmit="next(); return false;">
 					<h1>ご入信ありがとうございます</h1>
-					<p>ご入力いただいた情報は漏洩のないよう<span style="font-size: 120%;">厳格</span>に管理いたします。</p>
-					<p>ご入力いただいたメールアドレスに返信いたしますのでしばらくお待ちください。</p>
+					<p>ご入力いただいた情報は<u>漏洩のないよう<span style="font-size: 120%;">厳格</span>に管理</u>いたします。</p>
+					<p>ご入力いただいた<span style="color: blue;">メールアドレス</span>に<span style="display: inline-block; transform: rotate(15deg); font-size: 110%;">返信</span>いたしますのでしばらくお待ちください。</p>
 					<input type="submit" style="display: none;" name="sub">
 				</form>
 				<button class="button" onclick="document.fm.sub.click()">トップページへ戻る</button>
 			</div>
 		</main>
 		<footer>
+			<a href="https://twitter.com/powloan001?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @powloan001</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+			<a href="mailto:kyaorensapowroan@gmail.com">メールでお問い合わせ</a>
+			<br>
 			<label>© 2020 キャオレンサーポーロアン教</label>
 		</footer>
 		<script>
-			localStorage.setItem("nyusin", "true");
 			function next() {
 				location = "/";
 			}
