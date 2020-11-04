@@ -38,6 +38,7 @@ footer {
 	height: 55px;
 	text-align: center;
 	background-color: var(--color1);
+	padding: 2px 0;
 }
 
 #content {
