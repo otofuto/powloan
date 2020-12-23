@@ -3,4 +3,5 @@
 *.exe
 *.md
 *.zip
+.env
 document/
