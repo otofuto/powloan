@@ -122,7 +122,7 @@
 				let data = new FormData();
 				data.append("who", who.innerText.trim());
 				data.append("comment", comment.innerText);
-				fetch('/UploadKoe', {
+				fetch('/Koes', {
 					method: "post",
 					body: data
 				}).then(res => {

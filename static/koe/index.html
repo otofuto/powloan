@@ -183,23 +183,6 @@
 		<main id="main">
 			<div id="content">
 				<h1 style="text-shadow: 0 0 10px white;">信者の声</h1>
-				<p style="font-size: 80%; color: gray;">2020.12.23 でっちあげ</p>
-				<div class="paper">
-					<h2>Aさん (東京都 70代)</h2>
-					<p>ひどい腰痛に悩まされていましたが、キャオレンサーポーロアン教に入信した途端治りました。</p>
-					<p>今では楽しくプロレスをしています。</p>
-					<p></p>
-				</div>
-				<div class="paper">
-					<h2>Bさん (ミシガン州 30代)</h2>
-					<p>多額の借金を背負わされていましたが、入信した途端嘘のようになくなり、今ではギャンブルを楽しんでいます。</p>
-					<p></p>
-				</div>
-				<div class="paper">
-					<h2>Cさん (兵庫県 20代)</h2>
-					<p>ご近所トラブルが酷く、悩まされていましたが、キャオレンサーポーロアン教に入信したらご近所の人が話しかけてこなくなり、トラブルが解消しました。</p>
-					<p></p>
-				</div>
 			</div>
 		</main>
 		<footer>
@@ -214,9 +197,31 @@
 		<script>
 			if (localStorage.getItem("nyusin") != null) {
 				smoke.remove();
+			} else {
+				smoke.addEventListener('click', () => {
+					smoke.remove();
+				});
 			}
-			smoke.addEventListener('click', () => {
-				smoke.remove();
+
+			fetch('/Koes').then(res => res.json())
+			.then(koes => {
+				Array.from(koes).forEach(koe => {
+					var paper = document.createElement("div");
+					paper.setAttribute("class", "paper");
+
+					var h2 = document.createElement("h2");
+					h2.innerText = koe.who;
+					paper.appendChild(h2);
+
+					var lines = koe.comment.split('\n');
+					lines.forEach(ln => {
+						var p = document.createElement("p");
+						p.innerText = ln;
+						paper.appendChild(p);
+					});
+
+					content.appendChild(paper);
+				});
 			});
 		</script>
 	</body>

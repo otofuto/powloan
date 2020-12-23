@@ -6,6 +6,7 @@ import (
 	"os"
 	"net/smtp"
 	"net/http"
+	"encoding/json"
 	"github.com/otofuto/powloan/pkg/database/koes"
 )
 
@@ -22,7 +23,7 @@ func main() {
 
 	//API
 	http.HandleFunc("/Signup", SignupHandle)
-	http.HandleFunc("/UploadKoe", UploadKoeHandle)
+	http.HandleFunc("/Koes", UploadKoeHandle)
 
 	log.Println("Listening on port: " + port)
 	log.Fatal(http.ListenAndServe(":" + port, nil))
@@ -73,7 +74,7 @@ func GetSex(sex string) string {
 }
 
 func UploadKoeHandle(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json");
+	w.Header().Set("Content-Type", "application/json")
 
 	if r.Method == http.MethodPost {
 		r.ParseMultipartForm(32 << 20)
@@ -82,11 +83,25 @@ func UploadKoeHandle(w http.ResponseWriter, r *http.Request) {
 			Comment: r.FormValue("comment"),
 		}
 		if k.Insert() {
-			return fmt.Fprintf(w, "1")
+			fmt.Fprintf(w, "1")
 		} else {
-			return http.Error(w, "insert failed.", 500);
+			http.Error(w, "insert failed.", 500)
 		}
+	} else if r.Method == http.MethodGet {
+		koes, err := koes.All()
+		if err != nil {
+			log.Println(err);
+			http.Error(w, "failed to get all koes.", 500)
+			return
+		}
+		bytes, err := json.Marshal(koes)
+		if err != nil {
+			log.Println(err)
+			http.Error(w, "failed to marshal json koes.", 500)
+			return
+		}
+		fmt.Fprintf(w, string(bytes))
 	} else {
-		return http.Error(w, "method not allowed.", 405)
+		http.Error(w, "method not allowed.", 405)
 	}
 }

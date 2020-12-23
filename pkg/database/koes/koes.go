@@ -3,7 +3,6 @@ package koes
 import (
 	"log"
 	"errors"
-	"database/sql"
 	"github.com/otofuto/powloan/pkg/database"
 	//"../../database"
 )
@@ -33,7 +32,7 @@ func All() ([]Koes, error) {
 	db := database.Connect()
 	defer db.Close()
 
-	rows, err := db.Query("select who, comment, created_at from koes order by created_at desc")
+	rows, err := db.Query("select who, comment, created_at from koes order by created_at")
 	if err != nil {
 		log.Println(err)
 		return make([]Koes, 0), errors.New("select failed at koes.All()")
