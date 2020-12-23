@@ -6,6 +6,7 @@ import (
 	"os"
 	"net/smtp"
 	"net/http"
+	"github.com/otofuto/powloan/pkg/database/koes"
 )
 
 var port string
@@ -21,6 +22,7 @@ func main() {
 
 	//API
 	http.HandleFunc("/Signup", SignupHandle)
+	http.HandleFunc("/UploadKoe", UploadKoeHandle)
 
 	log.Println("Listening on port: " + port)
 	log.Fatal(http.ListenAndServe(":" + port, nil))
@@ -68,4 +70,23 @@ func GetSex(sex string) string {
 		return "その他"
 	}
 	return "不明"
+}
+
+func UploadKoeHandle(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json");
+
+	if r.Method == http.MethodPost {
+		r.ParseMultipartForm(32 << 20)
+		k := koes.Koes {
+			Who: r.FormValue("who"),
+			Comment: r.FormValue("comment"),
+		}
+		if k.Insert() {
+			return fmt.Fprintf(w, "1")
+		} else {
+			return http.Error(w, "insert failed.", 500);
+		}
+	} else {
+		return http.Error(w, "method not allowed.", 405)
+	}
 }

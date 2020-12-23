@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<meta name="description" content="皆さまと一緒に人間の心理、真理。そして、それらが産み出す絶大な力とは何かを紐解いて行きましょう。">
+		<meta name="keywords" content="新興宗教,キャオレン,サーポーロアン">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="robots" content="noindex,nofollow">
+		<meta name="author" content="OTFT">
+		<title>信者の声アップロード | キャオレンサーポーロアン教</title>
+		<link rel="canonical" href="https://powloan.herokuapp.com/koe/upload/">
+		<link rel="author" href="https://otft.info">
+		<link rel="stylesheet" href="/master.css">
+		<style>
+			body {
+				background-image: url('/materials/4189b67b.gif');
+				background-blend-mode: lighten;
+				background-color: rgba(181, 190, 200, 1);
+				background-size: cover;
+				background-position: center;
+				animation-name: bodyback;
+				animation-duration: 2000ms;
+				animation-delay: 2800ms;
+				animation-fill-mode: forwards;
+				animation-timing-function: linear;
+			}
+
+			@keyframes bodyback {
+				0% {
+					background-color: rgba(181, 190, 200, 1);
+				}
+
+				100% {
+					background-color: rgba(181, 190, 200, 0);
+				}
+			}
+
+			#content {
+				text-align: center;
+			}
+
+			.paper {
+				background-color: rgba(253, 245, 230, 0.6);
+				padding: 2em;
+				margin: 20px auto;
+				border-top-right-radius: 100% 20px;
+				border-bottom-right-radius: 20px 100%;
+				border-top-left-radius: 20px 100%;
+				border-bottom-left-radius: 100% 20px;
+				background-image: url('/materials/nuno.jpg');
+				background-blend-mode: lighten;
+				text-shadow: 2px 2px 5px gray;
+				text-align: left;
+			}
+
+			h2 {
+				color: var(--color1);
+				text-shadow: 0 0 5px green;
+				text-align: left;
+				border: dashed 2px gray;
+			}
+
+			h2:before {
+				content: '';
+				background-image: url('/materials/human.png');
+				background-size: cover;
+				background-repeat: no-repeat;
+				border-radius: 50%;
+				width: 50px;
+				height: 50px;
+				position: relative;
+				display: inline-block;
+				vertical-align: bottom;
+				margin-right: 15px;
+				box-shadow: 2px 2px 4px green;
+			}
+
+			h2:empty:after {
+				content: 'Aさん (東京都 70代)';
+			}
+
+			#comment {
+				display: block;
+				width: 100%;
+				min-height: 300px;
+				border: dashed 2px gray;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<label>～ 一人ひとり違う神を崇めばいいのさ ～ </label><span style="font-size: 160%;" onclick="location = '/';">キャオレンサーポーロアン教</span>
+		</header>
+		<main id="main">
+			<div id="content">
+				<h1 style="text-shadow: 0 0 10px white;">信者の声</h1>
+				<div class="paper">
+					<h2 id="who" contenteditable></h2>
+					<div id="comment" contenteditable></div>
+					<div style="text-align: center;">
+						<button class="button" onclick="upload()">送信</button>
+					</div>
+				</div>
+			</div>
+		</main>
+		<footer>
+			<a href="https://twitter.com/powloan001?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @powloan001</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+			<a href="mailto:kyaorensapowroan@gmail.com">メールでお問い合わせ</a>
+			<br>
+			<label>© 2020 キャオレンサーポーロアン教</label>
+		</footer>
+		<script>
+			function upload() {
+				if (who.innerText.trim() == "") {
+					alert('信者の表示名が入力されていません');
+					return;
+				}
+				if (comment.innerText.trim() == "") {
+					alert('内容が入力されていません');
+					return;
+				}
+				let data = new FormData();
+				data.append("who", who.innerText.trim());
+				data.append("comment", comment.innerText);
+				fetch('/UploadKoe', {
+					method: "post",
+					body: data
+				}).then(res => {
+					if (res.status == 200)
+						return res.json();
+					return null;
+				}).then(result => {
+					if (result != null) {
+						alert("投稿しました");
+						location = "/koe/";
+					} else {
+						alert('失敗しました');
+					}
+				});
+			}
+		</script>
+	</body>
+</html>
